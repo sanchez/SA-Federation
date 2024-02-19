@@ -6,17 +6,9 @@ using Speckle.Core.Logging;
 using Speckle.Core.Models;
 using Speckle.Core.Models.Extensions;
 using Speckle.Core.Transports;
+using SpeckleAutomate.Federation;
 
-public class FederationObject : Base
-{
-  public string SourceName { get; set; }
-  [DetachProperty] public Base Document { get; set; }
-}
 
-public class FederationModel : Base
-{
-  [DetachProperty] public List<FederationObject> Items { get; set; } = new List<FederationObject>();
-}
 
 public static class AutomateFunction
 {
