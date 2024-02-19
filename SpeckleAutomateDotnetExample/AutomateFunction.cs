@@ -17,7 +17,7 @@ public static class AutomateFunction
 
   public class FederationModel : Base
   {
-    [DetachProperty] public List<FederationObject> Items { get; set; }
+    [DetachProperty] public List<FederationObject> Items { get; set; } = new List<FederationObject>();
   }
 
   async static Task<FederationModel> GetFederatedModel(string objectId, ITransport serverTransport)
