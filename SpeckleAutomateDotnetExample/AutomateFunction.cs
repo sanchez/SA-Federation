@@ -5,6 +5,7 @@ using Speckle.Core.Credentials;
 using Speckle.Core.Logging;
 using Speckle.Core.Models;
 using Speckle.Core.Models.Extensions;
+using Speckle.Core.Serialisation;
 using Speckle.Core.Transports;
 using SpeckleAutomate.Federation;
 
@@ -70,6 +71,7 @@ public static class AutomateFunction
       message = commits.First().message;
     }
 
+    new BaseObjectSerializerV2().PreserializeBase(federatedModel, true);
     await automationContext.CreateNewVersionInProject(federatedModel, functionInputs.TargetModelName, message);
   }
 }
