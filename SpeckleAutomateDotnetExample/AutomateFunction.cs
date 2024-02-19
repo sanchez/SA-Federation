@@ -9,27 +9,30 @@ using Speckle.Core.Serialisation;
 using Speckle.Core.Transports;
 using SpeckleAutomate.Federation;
 
-
-
 public static class AutomateFunction
 {
-  async static Task<FederationModel> GetFederatedModel(string objectId, ITransport serverTransport)
+  async static Task<Collection> GetFederatedModel(string objectId, ITransport serverTransport)
   {
     Base? receivedObject = await Operations.Receive(objectId, serverTransport);
 
     if (receivedObject == null)
-      return new FederationModel();
+      return new Collection()
+      {
+        collectionType = "federation"
+      };
 
-    if (receivedObject is FederationModel fedModel)
+    if (receivedObject is Collection fedModel && fedModel.collectionType == "federation")
       return fedModel;
 
-    return new FederationModel()
+    Base instance = new Base();
+    instance["item"] = receivedObject;
+    instance["sourceName"] = "Main";
+
+    return new Collection()
     {
-      Items = new List<FederationObject>() {
-        new FederationObject() {
-          SourceName = "Main",
-          Document = receivedObject
-        }
+      collectionType = "federation",
+      elements = new List<Base>() {
+        instance
       }
     };
   }
@@ -44,26 +47,30 @@ public static class AutomateFunction
     string branchName = automationContext.AutomationRunData.BranchName;
 
     Base currentVersion = await automationContext.ReceiveVersion();
-    FederationObject fedObject = new FederationObject()
-    {
-      SourceName = branchName,
-      Document = currentVersion,
-    };
+    Base fedObject = new();
+    fedObject["item"] = currentVersion;
+    fedObject["sourceName"] = branchName;
 
     ServerTransport serverTransport = new(automationContext.SpeckleClient.Account, projectId);
 
     Branch branch = await automationContext.SpeckleClient.BranchGet(projectId, functionInputs.TargetModelName);
     var commits = branch.commits.items;
 
-    FederationModel federatedModel = new();
+    Collection federatedModel = new();
     if (commits.Count > 0)
     {
       string referencedObject = commits.First().referencedObject;
       federatedModel = await GetFederatedModel(referencedObject, serverTransport);
     }
 
-    federatedModel.Items = federatedModel.Items.Where(x => x.SourceName != branchName).ToList();
-    federatedModel.Items.Add(fedObject);
+    federatedModel.elements = federatedModel.elements.Where(x =>
+    {
+      var sourceName = x["sourceName"];
+      if (sourceName is string s && s == branchName)
+        return true;
+      return false;
+    }).ToList();
+    federatedModel.elements.Add(fedObject);
 
     string message = "Automated Model Federation";
     if (commits.Count > 0)
