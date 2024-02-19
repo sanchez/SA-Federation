@@ -5,7 +5,7 @@ namespace SpeckleAutomate.Federation;
 
 public class FederationModel : Base
 {
-    [DetachProperty] public List<FederationObject> Items { get; set; } = new List<FederationObject>();
+    [DetachProperty(true)] public List<FederationObject> Items { get; set; } = new List<FederationObject>();
 
     [JsonConstructor]
     public FederationModel() { }
