@@ -78,7 +78,7 @@ public static class AutomateFunction
       message = commits.First().message;
     }
 
-    // new BaseObjectSerializerV2().PreserializeBase(federatedModel, true);
+    new BaseObjectSerializerV2().PreserializeBase(federatedModel, true);
     await automationContext.CreateNewVersionInProject(federatedModel, functionInputs.TargetModelName, message);
   }
 }
