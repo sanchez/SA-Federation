@@ -67,8 +67,8 @@ public static class AutomateFunction
     {
       var sourceName = x["sourceName"];
       if (sourceName is string s && s == branchName)
-        return true;
-      return false;
+        return false;
+      return true;
     }).ToList();
     federatedModel.elements.Add(fedObject);
 
