@@ -21,7 +21,7 @@ public static class AutomateFunction
         name = "federation"
       };
 
-    if (receivedObject is Collection fedModel && fedModel.collectionType == "federation")
+    if (receivedObject is Collection fedModel && fedModel.name == "federation")
       return fedModel;
 
     Base instance = new Base();
