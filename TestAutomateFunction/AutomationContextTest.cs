@@ -85,7 +85,7 @@ public sealed class AutomationContextTest : IDisposable
     account = new Account
     {
       token = GetSpeckleToken(),
-      serverInfo = new ServerInfo { url = GetSpeckleServerUrl()}
+      serverInfo = new ServerInfo { url = GetSpeckleServerUrl() }
     };
     client = new Client(account);
   }
@@ -98,7 +98,7 @@ public sealed class AutomationContextTest : IDisposable
       AutomateFunction.Run,
       automationRunData,
       account.token,
-      new FunctionInputs { SpeckleTypeToCount = "Base" }
+      new FunctionInputs()
     );
 
     Assert.That(automationContext.RunStatus, Is.EqualTo("SUCCEEDED"));
