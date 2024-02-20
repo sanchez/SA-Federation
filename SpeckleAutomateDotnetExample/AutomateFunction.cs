@@ -18,19 +18,19 @@ public static class AutomateFunction
     if (receivedObject == null)
       return new Collection()
       {
-        collectionType = "federation"
+        name = "federation"
       };
 
     if (receivedObject is Collection fedModel && fedModel.collectionType == "federation")
       return fedModel;
 
     Base instance = new Base();
-    instance["item"] = receivedObject;
+    instance["@item"] = receivedObject;
     instance["sourceName"] = "Main";
 
     return new Collection()
     {
-      collectionType = "federation",
+      name = "federation",
       elements = new List<Base>() {
         instance
       }
@@ -48,7 +48,7 @@ public static class AutomateFunction
 
     Base currentVersion = await automationContext.ReceiveVersion();
     Base fedObject = new();
-    fedObject["item"] = currentVersion;
+    fedObject["@item"] = currentVersion;
     fedObject["sourceName"] = branchName;
 
     ServerTransport serverTransport = new(automationContext.SpeckleClient.Account, projectId);
@@ -78,7 +78,7 @@ public static class AutomateFunction
       message = commits.First().message;
     }
 
-    new BaseObjectSerializerV2().PreserializeBase(federatedModel, true);
+    // new BaseObjectSerializerV2().PreserializeBase(federatedModel, true);
     await automationContext.CreateNewVersionInProject(federatedModel, functionInputs.TargetModelName, message);
   }
 }
